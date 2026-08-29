@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b493d">
+  <title>Smart Trafik</title>
+  <style>
+    /* ===== Tetapan asas ===== */
+    :root{--green:#0b493d;--green2:#147862;--bg:#f3f6f8;--text:#0f172a;--muted:#64748b;--line:#e2e8f0}
+    *{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+    button,input{font:inherit}button{cursor:pointer;border:0}.touch{min-width:48px;min-height:48px}.app{min-height:100vh;padding-bottom:92px;background:radial-gradient(circle at 20% 0,#e7f3ef 0,transparent 28%),var(--bg)}
+    .wrap{max-width:1120px;margin:auto}.header{height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 16px}.brand{display:flex;align-items:center;gap:10px}.logo{width:40px;height:40px;border-radius:14px;display:grid;place-items:center;background:var(--green);color:#fff;font-size:20px}.brand h1{margin:0;font-size:18px;letter-spacing:-.5px}.brand p{margin:3px 0 0;font-size:10px;color:var(--muted)}.online{display:inline-block;width:6px;height:6px;margin-right:5px;border-radius:50%;background:#10b981}.icon-btn{width:48px;height:48px;border-radius:16px;background:#fff;color:#475569;box-shadow:0 2px 8px #0f172a0d;font-size:18px}
+    /* ===== Carian kamera ===== */
+    .search-wrap{position:relative;z-index:5;margin:0 16px 12px}.search{width:100%;height:48px;border:1px solid var(--line);border-radius:16px;background:#fff;padding:0 52px 0 42px;font-size:13px;outline:0;box-shadow:0 2px 7px #0f172a08}.search:focus{border-color:#10b981;box-shadow:0 0 0 4px #10b98116}.search-icon{position:absolute;left:15px;top:14px;color:#94a3b8}.filter{position:absolute;right:0;top:0;width:48px;height:48px;background:transparent;font-size:18px}.results{display:none;position:absolute;top:55px;left:0;right:0;padding:5px;border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:0 14px 32px #0f172a20}.results.show{display:block}.result{display:flex;width:100%;min-height:48px;align-items:center;justify-content:space-between;padding:7px 12px;border-radius:12px;background:#fff;text-align:left}.result:hover{background:#f8fafc}.result b{display:block;font-size:12px}.result small{color:var(--muted)}
+    /* ===== Pemain video 16:9 ===== */
+    .player-card{margin:0 16px;overflow:hidden;border-radius:22px;background:#020617;box-shadow:0 10px 25px #0f172a18}.player{position:relative;aspect-ratio:16/9;overflow:hidden;background:linear-gradient(180deg,#8aa099 0 40%,#68736f 40% 46%,#242a28 46% 100%)}.player:before{content:"";position:absolute;inset:0;opacity:.45;background:linear-gradient(90deg,transparent 0 10%,#174238 10% 17%,transparent 17% 76%,#173b33 76% 84%,transparent 84%)}.road{position:absolute;inset:46% 0 0;background:repeating-linear-gradient(104deg,transparent 0 13%,#ffffffb3 13.4% 14%,transparent 14.4% 29%);clip-path:polygon(36% 0,64% 0,100% 100%,0 100%);opacity:.62}.player-top,.player-bottom{position:absolute;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px;color:#fff}.player-top{top:0}.player-bottom{bottom:0;align-items:flex-end;padding-top:52px;background:linear-gradient(transparent,#000c)}.live,.cam-id{border-radius:99px;background:#0008;padding:6px 10px;font-size:9px;font-weight:800;backdrop-filter:blur(5px)}.live-dot{display:inline-block;width:8px;height:8px;margin-right:7px;border-radius:50%;background:#ef4444;animation:pulse 1.25s infinite}@keyframes pulse{70%{box-shadow:0 0 0 7px #ef444400}}.location b{display:block;font-size:13px}.location small{font-size:9px;color:#ffffffb3}.controls{display:flex;gap:4px}.control{width:44px;height:44px;min-width:44px;border-radius:13px;background:#ffffff25;color:#fff;font-size:16px;backdrop-filter:blur(7px)}.paused,.refreshing{display:none;position:absolute;inset:0;z-index:3;place-items:center;background:#0009;color:#fff;font-size:12px;font-weight:700}.paused.show,.refreshing.show{display:grid}.big-play{width:56px;height:56px;border-radius:50%;background:#fff;color:var(--green);font-size:20px}
+    /* ===== Status dan metrik analisis ===== */
+    .status-card{margin:12px 16px 0;padding:14px;display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:0 2px 8px #0f172a0b}.status-main{display:flex;align-items:center;gap:12px}.status-icon{width:44px;height:44px;display:grid;place-items:center;border-radius:16px;color:#fff;font-size:20px}.status-card small{font-size:9px;font-weight:700;letter-spacing:1px;color:#94a3b8}.status-card h2{margin:3px 0 0;font-size:18px}.fav{width:48px;height:48px;border-radius:16px;background:#f8fafc;font-size:19px;color:#94a3b8}.fav.active{background:#fff1f2;color:#f43f5e}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 16px 0}.metric{padding:11px 4px;border:1px solid var(--line);border-radius:18px;background:#fff;text-align:center;box-shadow:0 2px 7px #0f172a09}.metric .mi{color:var(--green2)}.metric strong{display:block;margin-top:5px;font-size:17px;line-height:1}.metric strong span{font-size:8px;color:#94a3b8}.metric small{font-size:9px;color:var(--muted)}
+    /* ===== Kamera berdekatan ===== */
+    .nearby{margin-top:19px}.section-head{display:flex;align-items:center;justify-content:space-between;padding:0 16px}.section-head h3{margin:0;font-size:15px}.section-head p{margin:3px 0 0;font-size:10px;color:var(--muted)}.all{background:transparent;color:var(--green2);font-size:12px;font-weight:700}.camera-list{display:flex;gap:10px;overflow:auto;padding:10px 16px 2px;scrollbar-width:none}.camera-list::-webkit-scrollbar{display:none}.camera-card{min-width:196px;display:flex;gap:10px;align-items:center;padding:8px;border:1px solid var(--line);border-radius:16px;background:#fff;text-align:left}.camera-card.active{border-color:#10b981;box-shadow:0 0 0 2px #10b98116}.thumb{width:58px;height:58px;flex:none;display:grid;place-items:center;border-radius:12px;background:linear-gradient(155deg,#7d9b91,#285549 48%,#18221f 49%);color:#ffffffbb}.camera-card b{display:block;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}.camera-card small{font-size:9px;color:var(--muted)}.badge{display:inline-block;margin-top:6px;padding:4px 8px;border-radius:99px;font-size:8px;font-weight:800}.lancar{background:#ecfdf5;color:#047857}.sesak{background:#fffbeb;color:#b45309}.sangat-sesak{background:#fef2f2;color:#b91c1c}.ai-card{margin:14px 16px;padding:15px;border-radius:22px;background:var(--green);color:#fff}.ai-row{display:flex;align-items:center;gap:12px}.ai-icon{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:#ffffff17}.ai-info{flex:1}.ai-title{display:flex;justify-content:space-between;font-size:11px;font-weight:700}.bar{height:6px;margin-top:8px;overflow:hidden;border-radius:99px;background:#ffffff24}.bar i{display:block;width:96.4%;height:100%;background:#6ee7b7}.ai-info small{font-size:9px;color:#d1fae5}
+    /* ===== Navigasi bawah ===== */
+    .bottom-nav{position:fixed;z-index:20;left:0;right:0;bottom:0;height:76px;display:flex;justify-content:space-around;padding:8px 12px 0;border-top:1px solid var(--line);background:#fffffff2;box-shadow:0 -8px 24px #0f172a12;backdrop-filter:blur(15px)}.nav-btn{min-width:64px;min-height:48px;border-radius:13px;background:transparent;color:#94a3b8;font-size:9px;font-weight:700}.nav-btn i{display:block;margin-bottom:4px;font-style:normal;font-size:19px}.nav-btn.active{background:#ecfdf5;color:#065f46}
+    /* ===== Susun atur desktop berasingan ===== */
+    @media(min-width:1024px){.wrap{padding:18px 0 110px}.desktop-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(340px,.8fr);gap:20px}.nearby{margin-top:0}.camera-list{display:grid;grid-template-columns:1fr 1fr;overflow:visible}.camera-card{min-width:0}.bottom-nav{left:50%;right:auto;bottom:20px;width:520px;transform:translateX(-50%);border:1px solid var(--line);border-radius:24px}.player-card{border-radius:26px}}
+  </style>
+</head>
+<body>
+  <main class="app"><div class="wrap">
+    <!-- Header aplikasi -->
+    <header class="header"><div class="brand"><div class="logo">🚘</div><div><h1>Smart Trafik</h1><p><span class="online"></span>Sistem dalam talian</p></div></div><button class="icon-btn touch" aria-label="Notifikasi">🔔</button></header>
+    <div class="desktop-grid"><section>
+      <!-- Bar carian -->
+      <div class="search-wrap"><span class="search-icon">⌕</span><input id="search" class="search" placeholder="Cari lokasi atau kamera"><button class="filter touch" aria-label="Penapis">☷</button><div id="results" class="results"></div></div>
+      <!-- Pemain live feed -->
+      <div class="player-card"><div class="player"><div class="road"></div><div class="player-top"><span class="live"><i class="live-dot"></i>LIVE</span><span id="camId" class="cam-id">CAM 01 · HD</span></div><div id="paused" class="paused"><button class="big-play" onclick="togglePlay()">▶</button></div><div id="refreshing" class="refreshing">⟳ &nbsp; Menyambung...</div><div class="player-bottom"><div class="location"><b id="locationName">Jalan Templer</b><small id="locationArea">📍 Petaling Jaya</small></div><div class="controls"><button id="playBtn" class="control touch" onclick="togglePlay()" aria-label="Jeda">Ⅱ</button><button class="control touch" onclick="refreshFeed()" aria-label="Segarkan">↻</button><button class="control touch" onclick="fullScreen()" aria-label="Skrin penuh">⛶</button></div></div></div></div>
+      <!-- Status trafik -->
+      <article class="status-card"><div class="status-main"><span id="statusIcon" class="status-icon" style="background:#f59e0b">◒</span><div><small>KEADAAN SEMASA</small><h2 id="statusText">Sesak</h2></div></div><button id="fav" class="fav touch" onclick="toggleFavorite()" aria-label="Kegemaran">♡</button></article>
+      <!-- Data analisis -->
+      <div class="metrics"><div class="metric"><span class="mi">◴</span><strong><b id="speed">24</b><span> km/j</span></strong><small>Kelajuan</small></div><div class="metric"><span class="mi">◷</span><strong><b id="eta">18</b><span> min</span></strong><small>Masa</small></div><div class="metric"><span class="mi">🚗</span><strong><b id="vehicles">86</b><span> buah</span></strong><small>Kenderaan</small></div></div>
+    </section><aside>
+      <!-- Kamera berdekatan -->
+      <section class="nearby"><div class="section-head"><div><h3>Kamera berdekatan</h3><p>Pilih untuk menukar siaran</p></div><button class="all touch">Semua</button></div><div id="cameraList" class="camera-list"></div></section>
+      <!-- Ketepatan analisis AI -->
+      <article class="ai-card"><div class="ai-row"><div class="ai-icon">✦</div><div class="ai-info"><div class="ai-title"><span>Analisis AI YOLO</span><span>96.4%</span></div><div class="bar"><i></i></div><small>Dikemas kini beberapa saat lalu</small></div></div></article>
+    </aside></div>
+  </div>
+  <!-- Navigasi bawah -->
+  <nav class="bottom-nav"><button class="nav-btn touch active"><i>⌂</i>Utama</button><button class="nav-btn touch"><i>▣</i>Kamera</button><button class="nav-btn touch"><i>⌖</i>Peta</button><button class="nav-btn touch"><i>⚙</i>Tetapan</button></nav></main>
+  <script>
+    // ===== Data contoh kamera; gantikan dengan data API/YOLO sebenar =====
+    const cameras=[
+      {id:1,name:"Jalan Templer",area:"Petaling Jaya",status:"Sesak",speed:24,eta:18,vehicles:86},
+      {id:2,name:"Lebuhraya Persekutuan",area:"KM 12.4",status:"Lancar",speed:72,eta:8,vehicles:42},
+      {id:3,name:"Persiaran Barat",area:"Seksyen 52",status:"Sangat Sesak",speed:8,eta:31,vehicles:128},
+      {id:4,name:"Jalan Utara",area:"Pintu A",status:"Lancar",speed:61,eta:10,vehicles:37}
+    ];
+    let selectedId=1,playing=true,favorites=[2];
+    const $=id=>document.getElementById(id);
+    const slug=s=>s.toLowerCase().replaceAll(" ","-");
+    function renderCameras(){
+      $("cameraList").innerHTML=cameras.map(c=>`<button class="camera-card ${c.id===selectedId?"active":""}" onclick="selectCamera(${c.id})"><div class="thumb">▣</div><div><b>${c.name}</b><small>${c.area}</small><span class="badge ${slug(c.status)}">${c.status}</span></div></button>`).join("");
+    }
+    function selectCamera(id){
+      selectedId=id;const c=cameras.find(x=>x.id===id);
+      $("locationName").textContent=c.name;$("locationArea").textContent="📍 "+c.area;$("camId").textContent="CAM 0"+c.id+" · HD";
+      $("statusText").textContent=c.status;$("speed").textContent=c.speed;$("eta").textContent=c.eta;$("vehicles").textContent=c.vehicles;
+      $("statusIcon").style.background=c.status==="Lancar"?"#10b981":c.status==="Sesak"?"#f59e0b":"#ef4444";
+      $("fav").classList.toggle("active",favorites.includes(id));$("fav").textContent=favorites.includes(id)?"♥":"♡";renderCameras();$("results").classList.remove("show");$("search").value="";
+    }
+    function togglePlay(){playing=!playing;$("paused").classList.toggle("show",!playing);$("playBtn").textContent=playing?"Ⅱ":"▶"}
+    function refreshFeed(){$("refreshing").classList.add("show");playing=true;$("paused").classList.remove("show");$("playBtn").textContent="Ⅱ";setTimeout(()=>$("refreshing").classList.remove("show"),900)}
+    function fullScreen(){document.querySelector(".player").requestFullscreen?.()}
+    function toggleFavorite(){favorites=favorites.includes(selectedId)?favorites.filter(x=>x!==selectedId):[...favorites,selectedId];selectCamera(selectedId)}
+    $("search").addEventListener("input",e=>{const q=e.target.value.toLowerCase(),items=cameras.filter(c=>(c.name+" "+c.area).toLowerCase().includes(q));$("results").innerHTML=items.length?items.map(c=>`<button class="result" onclick="selectCamera(${c.id})"><span><b>${c.name}</b><small>${c.area}</small></span>›</button>`).join(""):'<p style="padding:10px;font-size:12px;color:#64748b">Tiada kamera ditemui.</p>';$("results").classList.toggle("show",q.length>0)});
+    document.querySelectorAll(".nav-btn").forEach(btn=>btn.onclick=()=>{const label=btn.textContent,view=label.includes("Kamera")?"cameras":label.includes("Peta")?"map":label.includes("Tetapan")?"settings":"home";window.location.href=`./frontend/index.html${view!=="home"?`?view=${view}`:""}`});
+    renderCameras();selectCamera(1);
+  </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Frontend hanya memanggil FastAPI. Admin SDK backend menggunakan IAM dan
+    // tidak bergantung pada client security rules ini.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
