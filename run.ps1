@@ -14,6 +14,24 @@ if (-not $env:GOOGLE_APPLICATION_CREDENTIALS) {
     }
 }
 
+# Fallback kepada path dalam .env tempatan (fail ini diabaikan Git). Nilai
+# relatif diselesaikan terhadap root projek, bukan current working directory.
+if (-not $env:GOOGLE_APPLICATION_CREDENTIALS) {
+    $DotEnvPath = Join-Path $ProjectRoot ".env"
+    if (Test-Path -LiteralPath $DotEnvPath) {
+        $CredentialsSetting = Select-String -LiteralPath $DotEnvPath `
+            -Pattern '^GOOGLE_APPLICATION_CREDENTIALS=(.+)$' |
+            Select-Object -First 1
+        if ($CredentialsSetting) {
+            $ConfiguredCredentials = $CredentialsSetting.Matches[0].Groups[1].Value.Trim().Trim('"').Trim("'")
+            if (-not [System.IO.Path]::IsPathRooted($ConfiguredCredentials)) {
+                $ConfiguredCredentials = Join-Path $ProjectRoot $ConfiguredCredentials
+            }
+            $env:GOOGLE_APPLICATION_CREDENTIALS = $ConfiguredCredentials
+        }
+    }
+}
+
 if (-not (Test-Path -LiteralPath $VenvActivate)) {
     Write-Host "Virtual environment .venv belum tersedia." -ForegroundColor Yellow
     Write-Host "Jalankan: python -m venv .venv"

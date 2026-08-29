@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: smart-trafik-api
+    runtime: docker
+    region: singapore
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: FIREBASE_PROJECT_ID
+        value: smart-traffic-dab1e
+      - key: FIREBASE_ENABLED
+        value: "true"
+      - key: ALLOWED_ORIGINS
+        value: https://smart-traffic-dab1e.web.app
+      - key: GOOGLE_APPLICATION_CREDENTIALS_JSON
+        sync: false

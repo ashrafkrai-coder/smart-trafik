@@ -1,0 +1,134 @@
+[debug] [2026-08-29T07:41:56.496Z] ----------------------------------------------------------------------
+[debug] [2026-08-29T07:41:56.503Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\RAM1\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only hosting --project smart-traffic-dab1e --non-interactive
+[debug] [2026-08-29T07:41:56.504Z] CLI Version:   15.28.1
+[debug] [2026-08-29T07:41:56.504Z] Platform:      win32
+[debug] [2026-08-29T07:41:56.505Z] Node Version:  v25.9.0
+[debug] [2026-08-29T07:41:56.506Z] Detected Agent: codex_cli
+[debug] [2026-08-29T07:41:56.506Z] Time:          Sat Aug 29 2026 15:41:56 GMT+0800 (Singapore Standard Time)
+[debug] [2026-08-29T07:41:56.507Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-08-29T07:43:12.315Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-08-29T07:43:12.316Z] > authorizing via signed-in user (ashrafkrai@gmail.com)
+[debug] [2026-08-29T07:43:12.317Z] [iam] checking project smart-traffic-dab1e for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-08-29T07:43:12.346Z] Checked if tokens are valid: false, expires at: 1787977442120
+[debug] [2026-08-29T07:43:12.346Z] Checked if tokens are valid: false, expires at: 1787977442120
+[debug] [2026-08-29T07:43:12.347Z] > refreshing access token with scopes: []
+[debug] [2026-08-29T07:43:12.353Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-08-29T07:43:12.353Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-08-29T07:43:12.729Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-08-29T07:43:12.729Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-08-29T07:43:12.759Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/smart-traffic-dab1e:testIamPermissions [none]
+[debug] [2026-08-29T07:43:12.759Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/smart-traffic-dab1e:testIamPermissions  x-goog-user-project=smart-traffic-dab1e
+[debug] [2026-08-29T07:43:12.760Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/smart-traffic-dab1e:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-08-29T07:43:13.991Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/smart-traffic-dab1e:testIamPermissions 200
+[debug] [2026-08-29T07:43:13.991Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/smart-traffic-dab1e:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-08-29T07:43:13.993Z] Checked if tokens are valid: true, expires at: 1787992991730
+[debug] [2026-08-29T07:43:13.993Z] Checked if tokens are valid: true, expires at: 1787992991730
+[debug] [2026-08-29T07:43:13.993Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/smart-traffic-dab1e [none]
+[debug] [2026-08-29T07:43:14.512Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/smart-traffic-dab1e 200
+[debug] [2026-08-29T07:43:14.513Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/smart-traffic-dab1e {"projectId":"smart-traffic-dab1e","projectNumber":"125265529693","displayName":"smart traffic","name":"projects/smart-traffic-dab1e","resources":{"hostingSite":"smart-traffic-dab1e"},"state":"ACTIVE","labels":{"firebase":"enabled"},"etag":"1_ab0883df-41f8-4c2e-822f-25fc36b92b3f"}
+[info] 
+[info] === Deploying to 'smart-traffic-dab1e'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2026-08-29T07:43:14.542Z] Checked if tokens are valid: true, expires at: 1787992991730
+[debug] [2026-08-29T07:43:14.542Z] Checked if tokens are valid: true, expires at: 1787992991730
+[debug] [2026-08-29T07:43:14.543Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/smart-traffic-dab1e/sites/smart-traffic-dab1e [none]
+[debug] [2026-08-29T07:43:15.717Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/smart-traffic-dab1e/sites/smart-traffic-dab1e 200
+[debug] [2026-08-29T07:43:15.717Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/smart-traffic-dab1e/sites/smart-traffic-dab1e {"name":"projects/smart-traffic-dab1e/sites/smart-traffic-dab1e","defaultUrl":"https://smart-traffic-dab1e.web.app","appId":"1:125265529693:web:df8dbc361cedb07e38f6b4","type":"DEFAULT_SITE"}
+[debug] [2026-08-29T07:43:15.723Z] Checked if tokens are valid: true, expires at: 1787992991730
+[debug] [2026-08-29T07:43:15.723Z] Checked if tokens are valid: true, expires at: 1787992991730
+[debug] [2026-08-29T07:43:15.723Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/smart-traffic-dab1e/versions [none]
+[debug] [2026-08-29T07:43:15.723Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/smart-traffic-dab1e/versions {"status":"CREATED","labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2026-08-29T07:43:16.996Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/smart-traffic-dab1e/versions 200
+[debug] [2026-08-29T07:43:16.996Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/smart-traffic-dab1e/versions {"name":"projects/125265529693/sites/smart-traffic-dab1e/versions/dd09058d5f96a76a","status":"CREATED","config":{},"labels":{"deployment-tool":"cli-firebase"}}
+[info] i  hosting[smart-traffic-dab1e]: beginning deploy... 
+[info] i  hosting[smart-traffic-dab1e]: found 3 files in frontend-dist 
+[debug] [2026-08-29T07:43:17.024Z] [hosting] uploading with 200 concurrency
+[debug] [2026-08-29T07:43:17.026Z] [hosting] hash cache [ZnJvbnRlbmQtZGlzdA] not populated
+[debug] [2026-08-29T07:43:17.037Z] Checked if tokens are valid: true, expires at: 1787992991730
+[debug] [2026-08-29T07:43:17.037Z] Checked if tokens are valid: true, expires at: 1787992991730
+[debug] [2026-08-29T07:43:17.039Z] [hosting] hash cache [ZnJvbnRlbmQtZGlzdA] stored for 3 files
+[debug] [2026-08-29T07:43:17.039Z] [hosting][hash queue][FINAL] {"max":9,"min":5,"avg":6.333333333333333,"active":0,"complete":3,"success":3,"errored":0,"retried":0,"total":3,"elapsed":13}
+[debug] [2026-08-29T07:43:17.040Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/125265529693/sites/smart-traffic-dab1e/versions/dd09058d5f96a76a:populateFiles [none]
+[debug] [2026-08-29T07:43:17.040Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/125265529693/sites/smart-traffic-dab1e/versions/dd09058d5f96a76a:populateFiles {"files":{"/assets/manifest-D4XPXuJR.json":"06b41c3095e570913d60c699eeec379adb26264287c6ceeae254cb3712c7ee2f","/assets/icon-192-CBF8Ixuq.svg":"665b59ea5c531221784170a77f6778b8347f82ee6aa4248e638eefa2a69c7950","/index.html":"30b1c5155e4ef21a2a082768693cfac1df99f657bbae72797574ac7f959e5565"}}
+[debug] [2026-08-29T07:43:17.797Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/125265529693/sites/smart-traffic-dab1e/versions/dd09058d5f96a76a:populateFiles 200
+[debug] [2026-08-29T07:43:17.798Z] <<< [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/125265529693/sites/smart-traffic-dab1e/versions/dd09058d5f96a76a:populateFiles {"uploadRequiredHashes":["30b1c5155e4ef21a2a082768693cfac1df99f657bbae72797574ac7f959e5565"],"uploadUrl":"https://upload-firebasehosting.googleapis.com/upload/sites/smart-traffic-dab1e/versions/dd09058d5f96a76a/files"}
+[debug] [2026-08-29T07:43:17.799Z] Checked if tokens are valid: true, expires at: 1787992991730
+[debug] [2026-08-29T07:43:17.799Z] Checked if tokens are valid: true, expires at: 1787992991730
+[debug] [2026-08-29T07:43:17.799Z] >>> [apiv2][query] POST https://upload-firebasehosting.googleapis.com/upload/sites/smart-traffic-dab1e/versions/dd09058d5f96a76a/files/30b1c5155e4ef21a2a082768693cfac1df99f657bbae72797574ac7f959e5565 [none]
+[debug] [2026-08-29T07:43:17.800Z] >>> [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/smart-traffic-dab1e/versions/dd09058d5f96a76a/files/30b1c5155e4ef21a2a082768693cfac1df99f657bbae72797574ac7f959e5565 [stream]
+[debug] [2026-08-29T07:43:17.804Z] [hosting][populate queue][FINAL] {"max":763,"min":763,"avg":763,"active":0,"complete":1,"success":1,"errored":0,"retried":0,"total":1,"elapsed":768}
+[debug] [2026-08-29T07:43:17.805Z] [hosting] uploads queued: 1
+[info] i  hosting: uploading new files [0/1] (0%) 
+[debug] [2026-08-29T07:43:19.477Z] <<< [apiv2][status] POST https://upload-firebasehosting.googleapis.com/upload/sites/smart-traffic-dab1e/versions/dd09058d5f96a76a/files/30b1c5155e4ef21a2a082768693cfac1df99f657bbae72797574ac7f959e5565 200
+[debug] [2026-08-29T07:43:19.478Z] <<< [apiv2][body] POST https://upload-firebasehosting.googleapis.com/upload/sites/smart-traffic-dab1e/versions/dd09058d5f96a76a/files/30b1c5155e4ef21a2a082768693cfac1df99f657bbae72797574ac7f959e5565 [stream]
+[debug] [2026-08-29T07:43:19.478Z] [hosting][upload queue][FINAL] {"max":1680,"min":1680,"avg":1680,"active":0,"complete":1,"success":1,"errored":0,"retried":0,"total":1,"elapsed":1680}
+[info] i  hosting: upload complete 
+[info] +  hosting[smart-traffic-dab1e]: file upload complete 
+[debug] [2026-08-29T07:43:19.479Z] [hosting] deploy completed after 2479ms
+[debug] [2026-08-29T07:43:19.479Z] [
+  {
+    "config": {
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "public": "frontend-dist",
+      "rewrites": [
+        {
+          "destination": "/index.html",
+          "source": "**"
+        }
+      ],
+      "site": "smart-traffic-dab1e"
+    },
+    "version": "projects/125265529693/sites/smart-traffic-dab1e/versions/dd09058d5f96a76a"
+  }
+]
+[info] i  hosting[smart-traffic-dab1e]: finalizing version... 
+[debug] [2026-08-29T07:43:19.482Z] Checked if tokens are valid: true, expires at: 1787992991730
+[debug] [2026-08-29T07:43:19.483Z] Checked if tokens are valid: true, expires at: 1787992991730
+[debug] [2026-08-29T07:43:19.484Z] >>> [apiv2][query] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/smart-traffic-dab1e/versions/dd09058d5f96a76a updateMask=status%2Cconfig
+[debug] [2026-08-29T07:43:19.485Z] >>> [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/smart-traffic-dab1e/versions/dd09058d5f96a76a {"status":"FINALIZED","config":{"rewrites":[{"glob":"**","path":"/index.html"}]}}
+[debug] [2026-08-29T07:43:20.521Z] <<< [apiv2][status] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/smart-traffic-dab1e/versions/dd09058d5f96a76a 200
+[debug] [2026-08-29T07:43:20.522Z] <<< [apiv2][body] PATCH https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/smart-traffic-dab1e/versions/dd09058d5f96a76a {"name":"projects/125265529693/sites/smart-traffic-dab1e/versions/dd09058d5f96a76a","status":"FINALIZED","config":{"rewrites":[{"glob":"**","path":"/index.html"}]},"labels":{"deployment-tool":"cli-firebase"},"createTime":"2026-08-29T07:43:15.313587Z","createUser":{"email":"ashrafkrai@gmail.com"},"finalizeTime":"2026-08-29T07:43:19.502105Z","finalizeUser":{"email":"ashrafkrai@gmail.com"}}
+[debug] [2026-08-29T07:43:20.522Z] [hosting] finalized version for smart-traffic-dab1e:[object Object]
+[info] +  hosting[smart-traffic-dab1e]: version finalized 
+[info] i  hosting[smart-traffic-dab1e]: releasing new version... 
+[debug] [2026-08-29T07:43:20.523Z] Checked if tokens are valid: true, expires at: 1787992991730
+[debug] [2026-08-29T07:43:20.523Z] Checked if tokens are valid: true, expires at: 1787992991730
+[debug] [2026-08-29T07:43:20.525Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/smart-traffic-dab1e/channels/live/releases versionName=projects%2F125265529693%2Fsites%2Fsmart-traffic-dab1e%2Fversions%2Fdd09058d5f96a76a
+[debug] [2026-08-29T07:43:20.526Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/smart-traffic-dab1e/channels/live/releases {}
+[debug] [2026-08-29T07:43:21.443Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/smart-traffic-dab1e/channels/live/releases 200
+[debug] [2026-08-29T07:46:35.214Z] ----------------------------------------------------------------------
+[debug] [2026-08-29T07:46:35.228Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\RAM1\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js apps:list --project smart-traffic-dab1e
+[debug] [2026-08-29T07:46:35.229Z] CLI Version:   15.28.1
+[debug] [2026-08-29T07:46:35.230Z] Platform:      win32
+[debug] [2026-08-29T07:46:35.230Z] Node Version:  v25.9.0
+[debug] [2026-08-29T07:46:35.231Z] Detected Agent: codex_cli
+[debug] [2026-08-29T07:46:35.231Z] Time:          Sat Aug 29 2026 15:46:35 GMT+0800 (Singapore Standard Time)
+[debug] [2026-08-29T07:46:35.232Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-08-29T07:46:36.150Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-08-29T07:46:36.151Z] > authorizing via signed-in user (ashrafkrai@gmail.com)
+[debug] [2026-08-29T07:46:36.196Z] Checked if tokens are valid: true, expires at: 1787992991730
+[debug] [2026-08-29T07:46:36.196Z] Checked if tokens are valid: true, expires at: 1787992991730
+[debug] [2026-08-29T07:46:36.201Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/smart-traffic-dab1e:searchApps pageSize=100
+[debug] [2026-08-29T07:46:36.897Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/smart-traffic-dab1e:searchApps 200
+[debug] [2026-08-29T07:46:49.911Z] ----------------------------------------------------------------------
+[debug] [2026-08-29T07:46:49.919Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\RAM1\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js apps:sdkconfig WEB 1:125265529693:web:df8dbc361cedb07e38f6b4 --project smart-traffic-dab1e
+[debug] [2026-08-29T07:46:49.920Z] CLI Version:   15.28.1
+[debug] [2026-08-29T07:46:49.920Z] Platform:      win32
+[debug] [2026-08-29T07:46:49.920Z] Node Version:  v25.9.0
+[debug] [2026-08-29T07:46:49.921Z] Detected Agent: codex_cli
+[debug] [2026-08-29T07:46:49.921Z] Time:          Sat Aug 29 2026 15:46:49 GMT+0800 (Singapore Standard Time)
+[debug] [2026-08-29T07:46:49.921Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-08-29T07:46:50.652Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-08-29T07:46:50.653Z] > authorizing via signed-in user (ashrafkrai@gmail.com)
+[debug] [2026-08-29T07:46:50.693Z] Checked if tokens are valid: true, expires at: 1787992991730
+[debug] [2026-08-29T07:46:50.693Z] Checked if tokens are valid: true, expires at: 1787992991730
+[debug] [2026-08-29T07:46:50.698Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:125265529693:web:df8dbc361cedb07e38f6b4/config [none]
+[debug] [2026-08-29T07:46:52.228Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:125265529693:web:df8dbc361cedb07e38f6b4/config 200
