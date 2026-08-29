@@ -1,0 +1,14 @@
+﻿{
+    "devDependencies":  {
+                            "vite":  "^5.0.0"
+                        },
+    "name":  "smart-trafik-frontend",
+    "version":  "1.0.0",
+    "type":  "module",
+    "scripts":  {
+                    "preview":  "vite preview",
+                    "build":  "vite build",
+                    "dev":  "vite",
+                    "deploy":  "npm run build \u0026\u0026 firebase deploy --only hosting"
+                }
+}
