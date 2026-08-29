@@ -1,0 +1,22 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "traffic_records",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "camera_id", "order": "ASCENDING" },
+        { "fieldPath": "recorded_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "traffic_alerts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "camera_id", "order": "ASCENDING" },
+        { "fieldPath": "is_resolved", "order": "ASCENDING" },
+        { "fieldPath": "created_at", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

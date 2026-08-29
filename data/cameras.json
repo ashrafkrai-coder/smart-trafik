@@ -1,0 +1,6 @@
+[
+  {"camera_id": "CAM01", "camera_name": "Jalan Templer", "location": "Petaling Jaya", "mode": "live"},
+  {"camera_id": "CAM02", "camera_name": "Lebuhraya Persekutuan", "location": "KM 12.4", "mode": "demo"},
+  {"camera_id": "CAM03", "camera_name": "Persiaran Barat", "location": "Seksyen 52", "mode": "demo"},
+  {"camera_id": "CAM04", "camera_name": "Jalan Utara", "location": "Pintu A", "mode": "demo"}
+]
