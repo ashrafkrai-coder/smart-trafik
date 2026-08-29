@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import logging
+import json
+import os
 import threading
 import time
 from typing import Any
@@ -34,11 +36,14 @@ def initialize_firebase(force: bool = False) -> Any | None:
         try:
             import firebase_admin
             from firebase_admin import firestore
+            from firebase_admin import credentials
             try:
                 app = firebase_admin.get_app()
             except ValueError:
                 options = {"projectId": config.FIREBASE_PROJECT_ID} if config.FIREBASE_PROJECT_ID else None
-                app = firebase_admin.initialize_app(options=options)
+                raw_credentials = os.getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON")
+                credential = credentials.Certificate(json.loads(raw_credentials)) if raw_credentials else None
+                app = firebase_admin.initialize_app(credential=credential, options=options)
             candidate = firestore.client(app=app)
             # Client Firestore dibina secara lazy; bacaan kecil ini mengesahkan
             # credentials, project dan rangkaian sebelum health melapor connected.
