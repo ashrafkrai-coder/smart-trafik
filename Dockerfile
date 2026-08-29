@@ -11,9 +11,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend ./backend
 COPY models ./models
-COPY videos ./videos
 COPY data ./data
-COPY .env .
+# .env not copied - use Cloud Run env vars instead
+# videos/ not copied - mount from Cloud Storage or use default
 
 ENV PYTHONPATH=/app
 ENV PORT=8080

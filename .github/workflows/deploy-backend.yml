@@ -41,7 +41,7 @@ jobs:
           project_id: ${{ env.PROJECT_ID }}
           source: .
           dockerfile: Dockerfile
-          flags: "--allow-unauthenticated --port=8080 --memory=2Gi --cpu=2 --max-instances=10"
+          flags: "--allow-unauthenticated --port=8080 --memory=2Gi --cpu=2 --max-instances=10 --set-env-vars=FIREBASE_PROJECT_ID=smart-traffic-dab1e,FIREBASE_ENABLED=true,SEED_DEMO_CAMERA=true,CAMERA_ID=CAM01,CAMERA_NAME=Jalan Templer,CAMERA_LOCATION=Petaling Jaya,MODEL_NAME=yolo26n.pt,CONFIDENCE_THRESHOLD=0.35,IMAGE_SIZE=640,PROCESSING_FPS=12,ALLOWED_ORIGINS=https://smart-traffic-dab1e.web.app"
 
       - name: Show Service URL
         run: |

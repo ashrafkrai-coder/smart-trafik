@@ -8,7 +8,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-load_dotenv(PROJECT_ROOT / ".env")
+# Load .env if exists (local dev), in Cloud Run env vars are set directly
+load_dotenv(PROJECT_ROOT / ".env", override=False)
 VIDEO_DIR = PROJECT_ROOT / "videos"
 MODEL_DIR = PROJECT_ROOT / "models"
 FRONTEND_DIR = PROJECT_ROOT / "frontend"
@@ -22,7 +23,8 @@ def _as_bool(name: str, default: bool) -> bool:
     return default if value is None else value.strip().lower() in {"1", "true", "yes", "on"}
 
 
-VIDEO_SOURCE = os.getenv("VIDEO_SOURCE", os.getenv("SMART_TRAFIK_VIDEO", "videos/trafik.mp4"))
+# In Cloud Run, VIDEO_SOURCE may not exist locally. Default to empty - video processor handles missing.
+VIDEO_SOURCE = os.getenv("VIDEO_SOURCE", os.getenv("SMART_TRAFIK_VIDEO", ""))
 MODEL_NAME = os.getenv("MODEL_NAME", os.getenv("SMART_TRAFIK_MODEL", "yolo26n.pt"))
 FALLBACK_MODEL_NAME = os.getenv("FALLBACK_MODEL_NAME", os.getenv("SMART_TRAFIK_FALLBACK_MODEL", "yolo11n.pt"))
 CONFIDENCE_THRESHOLD = float(os.getenv("CONFIDENCE_THRESHOLD", os.getenv("SMART_TRAFIK_CONFIDENCE", "0.35")))
@@ -57,9 +59,12 @@ CORS_ORIGINS = list(dict.fromkeys(
 ))
 
 
-def resolve_video_source(source: str | None = None) -> Path:
-    """Pulangkan sumber video tempatan relatif kepada root projek."""
-    candidate = Path(source or VIDEO_SOURCE)
+def resolve_video_source(source: str | None = None) -> Path | None:
+    """Pulangkan sumber video tempatan relatif kepada root projek. Returns None if not found."""
+    src = source or VIDEO_SOURCE
+    if not src:
+        return None
+    candidate = Path(src)
     if not candidate.is_absolute():
         candidate = PROJECT_ROOT / candidate
-    return candidate.resolve()
+    return candidate.resolve() if candidate.is_file() else None

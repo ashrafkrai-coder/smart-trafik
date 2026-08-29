@@ -120,6 +120,11 @@ class VideoProcessor:
                 continue
 
             source = self.source_path
+            if source is None or not source.is_file():
+                self._set_offline("Video source not configured or file not found.")
+                self._stop_event.wait(config.RECONNECT_DELAY_SECONDS)
+                continue
+
             capture = cv2.VideoCapture(str(source))
             self._capture = capture
             if not capture.isOpened():

@@ -19,3 +19,5 @@ firestore.indexes.json
 Dockerfile
 .dockerignore
 .ultralytics
+credentials/
+videos/
