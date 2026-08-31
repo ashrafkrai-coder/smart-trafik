@@ -57,6 +57,9 @@ configured_origins = os.getenv("ALLOWED_ORIGINS", os.getenv("SMART_TRAFIK_CORS_O
 CORS_ORIGINS = list(dict.fromkeys(
     DEFAULT_CORS_ORIGINS + [item.strip() for item in configured_origins.split(",") if item.strip()]
 ))
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "").strip()
+ADMIN_TOKEN_SECRET = os.getenv("ADMIN_TOKEN_SECRET", ADMIN_PASSWORD).encode("utf-8")
+ADMIN_TOKEN_TTL_SECONDS = max(300, int(os.getenv("ADMIN_TOKEN_TTL_SECONDS", "28800")))
 
 
 def resolve_video_source(source: str | None = None) -> Path | None:

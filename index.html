@@ -48,33 +48,7 @@
   <!-- Navigasi bawah -->
   <nav class="bottom-nav"><button class="nav-btn touch active"><i>⌂</i>Utama</button><button class="nav-btn touch"><i>▣</i>Kamera</button><button class="nav-btn touch"><i>⌖</i>Peta</button><button class="nav-btn touch"><i>⚙</i>Tetapan</button></nav></main>
   <script>
-    // ===== Data contoh kamera; gantikan dengan data API/YOLO sebenar =====
-    const cameras=[
-      {id:1,name:"Jalan Templer",area:"Petaling Jaya",status:"Sesak",speed:24,eta:18,vehicles:86},
-      {id:2,name:"Lebuhraya Persekutuan",area:"KM 12.4",status:"Lancar",speed:72,eta:8,vehicles:42},
-      {id:3,name:"Persiaran Barat",area:"Seksyen 52",status:"Sangat Sesak",speed:8,eta:31,vehicles:128},
-      {id:4,name:"Jalan Utara",area:"Pintu A",status:"Lancar",speed:61,eta:10,vehicles:37}
-    ];
-    let selectedId=1,playing=true,favorites=[2];
-    const $=id=>document.getElementById(id);
-    const slug=s=>s.toLowerCase().replaceAll(" ","-");
-    function renderCameras(){
-      $("cameraList").innerHTML=cameras.map(c=>`<button class="camera-card ${c.id===selectedId?"active":""}" onclick="selectCamera(${c.id})"><div class="thumb">▣</div><div><b>${c.name}</b><small>${c.area}</small><span class="badge ${slug(c.status)}">${c.status}</span></div></button>`).join("");
-    }
-    function selectCamera(id){
-      selectedId=id;const c=cameras.find(x=>x.id===id);
-      $("locationName").textContent=c.name;$("locationArea").textContent="📍 "+c.area;$("camId").textContent="CAM 0"+c.id+" · HD";
-      $("statusText").textContent=c.status;$("speed").textContent=c.speed;$("eta").textContent=c.eta;$("vehicles").textContent=c.vehicles;
-      $("statusIcon").style.background=c.status==="Lancar"?"#10b981":c.status==="Sesak"?"#f59e0b":"#ef4444";
-      $("fav").classList.toggle("active",favorites.includes(id));$("fav").textContent=favorites.includes(id)?"♥":"♡";renderCameras();$("results").classList.remove("show");$("search").value="";
-    }
-    function togglePlay(){playing=!playing;$("paused").classList.toggle("show",!playing);$("playBtn").textContent=playing?"Ⅱ":"▶"}
-    function refreshFeed(){$("refreshing").classList.add("show");playing=true;$("paused").classList.remove("show");$("playBtn").textContent="Ⅱ";setTimeout(()=>$("refreshing").classList.remove("show"),900)}
-    function fullScreen(){document.querySelector(".player").requestFullscreen?.()}
-    function toggleFavorite(){favorites=favorites.includes(selectedId)?favorites.filter(x=>x!==selectedId):[...favorites,selectedId];selectCamera(selectedId)}
-    $("search").addEventListener("input",e=>{const q=e.target.value.toLowerCase(),items=cameras.filter(c=>(c.name+" "+c.area).toLowerCase().includes(q));$("results").innerHTML=items.length?items.map(c=>`<button class="result" onclick="selectCamera(${c.id})"><span><b>${c.name}</b><small>${c.area}</small></span>›</button>`).join(""):'<p style="padding:10px;font-size:12px;color:#64748b">Tiada kamera ditemui.</p>';$("results").classList.toggle("show",q.length>0)});
-    document.querySelectorAll(".nav-btn").forEach(btn=>btn.onclick=()=>{const label=btn.textContent,view=label.includes("Kamera")?"cameras":label.includes("Peta")?"map":label.includes("Tetapan")?"settings":"home";window.location.href=`./frontend/index.html${view!=="home"?`?view=${view}`:""}`});
-    renderCameras();selectCamera(1);
+    window.location.href = "http://localhost:5500" + location.search;
   </script>
 </body>
 </html>

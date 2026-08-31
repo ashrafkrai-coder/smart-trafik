@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import logging
+import hmac
+import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import Depends, FastAPI, Header, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field, field_validator
@@ -53,7 +55,7 @@ app.add_middleware(
     allow_origins=config.CORS_ORIGINS,
     allow_credentials=False,
     allow_methods=["GET", "POST", "PUT", "PATCH", "OPTIONS"],
-    allow_headers=["Content-Type"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 
@@ -63,6 +65,10 @@ class SourceRequest(BaseModel):
 
 class SettingsRequest(BaseModel):
     confidence_threshold: float = Field(ge=0.05, le=0.95, examples=[0.35])
+
+
+class AdminLoginRequest(BaseModel):
+    password: str = Field(min_length=1, max_length=256)
 
 
 class CameraUpdateRequest(BaseModel):
@@ -83,6 +89,39 @@ def _firebase_unavailable() -> HTTPException:
         "code": "firebase_unavailable",
         "message": "Firebase Cloud Firestore tidak tersedia. Data live masih beroperasi.",
     })
+
+
+def _admin_unavailable() -> HTTPException:
+    return HTTPException(status_code=503, detail="Akses Admin belum dikonfigurasi.")
+
+
+def _admin_signature(expires_at: int) -> str:
+    return hmac.new(config.ADMIN_TOKEN_SECRET, str(expires_at).encode("ascii"), "sha256").hexdigest()
+
+
+def _require_admin(authorization: str | None = Header(default=None)) -> None:
+    if not config.ADMIN_PASSWORD:
+        raise _admin_unavailable()
+    scheme, _, token = (authorization or "").partition(" ")
+    if scheme.lower() != "bearer" or not token:
+        raise HTTPException(status_code=401, detail="Log masuk Admin diperlukan.")
+    expires_text, separator, signature = token.partition(".")
+    try:
+        expires_at = int(expires_text)
+    except ValueError:
+        expires_at = 0
+    if not separator or expires_at < int(time.time()) or not hmac.compare_digest(signature, _admin_signature(expires_at)):
+        raise HTTPException(status_code=401, detail="Sesi Admin tidak sah atau telah tamat.")
+
+
+@app.post("/api/admin/login")
+def admin_login(request: AdminLoginRequest) -> dict[str, str | int]:
+    if not config.ADMIN_PASSWORD:
+        raise _admin_unavailable()
+    if not hmac.compare_digest(request.password, config.ADMIN_PASSWORD):
+        raise HTTPException(status_code=401, detail="Kata laluan Admin tidak tepat.")
+    expires_at = int(time.time()) + config.ADMIN_TOKEN_TTL_SECONDS
+    return {"access_token": f"{expires_at}.{_admin_signature(expires_at)}", "expires_at": expires_at}
 
 
 @app.get("/health")
@@ -165,7 +204,7 @@ def cameras() -> list[dict[str, Any]]:
 
 
 @app.put("/api/cameras/{camera_id}")
-def update_camera(camera_id: str, request: CameraUpdateRequest) -> dict[str, Any]:
+def update_camera(camera_id: str, request: CameraUpdateRequest, _: None = Depends(_require_admin)) -> dict[str, Any]:
     normalized_id = camera_id.strip().upper()
     try:
         updated = camera_store.update_camera(normalized_id, request.camera_name, request.location)
@@ -179,7 +218,7 @@ def update_camera(camera_id: str, request: CameraUpdateRequest) -> dict[str, Any
             camera_repository.upsert_camera({
                 "camera_id": normalized_id, "name": request.camera_name, "location": request.location,
                 "source_type": "video" if normalized_id == config.CAMERA_ID else updated["mode"],
-                "source_name": video_processor.source_path.name if normalized_id == config.CAMERA_ID else "",
+                "source_name": video_processor.source_path.name if video_processor.source_path and normalized_id == config.CAMERA_ID else "",
                 "is_active": True,
             })
         except Exception as exc:
@@ -199,7 +238,7 @@ def alerts(limit: int = Query(default=50, ge=1, le=100)) -> list[dict[str, Any]]
 
 
 @app.patch("/api/alerts/{alert_id}/resolve")
-def resolve_traffic_alert(alert_id: str) -> dict[str, str]:
+def resolve_traffic_alert(alert_id: str, _: None = Depends(_require_admin)) -> dict[str, str]:
     try:
         if not alert_repository.resolve_alert(alert_id):
             raise HTTPException(status_code=404, detail="Amaran tidak dijumpai.")
@@ -209,9 +248,9 @@ def resolve_traffic_alert(alert_id: str) -> dict[str, str]:
 
 
 @app.get("/api/settings")
-def get_settings() -> dict[str, Any]:
+def get_settings(_: None = Depends(_require_admin)) -> dict[str, Any]:
     return {
-        "source": video_processor.source_path.name,
+        "source": video_processor.source_path.name if video_processor.source_path else "",
         "confidence_threshold": config.CONFIDENCE_THRESHOLD,
         "image_size": config.IMAGE_SIZE,
         "processing_fps": config.PROCESSING_FPS,
@@ -224,14 +263,14 @@ def get_settings() -> dict[str, Any]:
 
 
 @app.post("/api/settings")
-def update_settings(request: SettingsRequest) -> dict[str, str | float]:
+def update_settings(request: SettingsRequest, _: None = Depends(_require_admin)) -> dict[str, str | float]:
     config.CONFIDENCE_THRESHOLD = request.confidence_threshold
     return {"status": "updated", "confidence_threshold": config.CONFIDENCE_THRESHOLD,
             "message": "Confidence YOLO telah dikemas kini untuk analisis seterusnya."}
 
 
 @app.post("/api/source")
-def change_source(request: SourceRequest) -> dict[str, str]:
+def change_source(request: SourceRequest, _: None = Depends(_require_admin)) -> dict[str, str]:
     filename = request.source
     if Path(filename).name != filename or "/" in filename or "\\" in filename:
         raise HTTPException(status_code=400, detail="Gunakan nama fail sahaja; path tidak dibenarkan.")

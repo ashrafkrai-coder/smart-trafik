@@ -105,6 +105,20 @@ Dalam VS Code, klik kanan `frontend/index.html` dan pilih **Open with Live Serve
 
 Dashboard menghentikan polling ketika tab tidak aktif, membatalkan request tertunggak, dan menyambung semula apabila tab aktif. Data live dibersihkan apabila API offline supaya data lama tidak kelihatan sebagai data semasa.
 
+## Akses Admin PWA
+
+Paparan awam boleh menggunakan menu **Utama**, **Kamera** dan **Peta**. Menu **Tetapan** meminta log masuk Admin; perubahan nama kamera, sumber video, confidence YOLO dan penyelesaian amaran juga dilindungi oleh backend.
+
+Tambahkan nilai berikut dalam `.env` (jangan commit fail itu):
+
+```text
+ADMIN_PASSWORD=kata-laluan-admin-yang-panjang
+ADMIN_TOKEN_SECRET=rahsia-token-rawak-yang-berbeza
+ADMIN_TOKEN_TTL_SECONDS=28800
+```
+
+Mulakan semula backend selepas mengubah `.env`. Jika `ADMIN_PASSWORD` tidak ditetapkan, semua operasi Admin kekal dikunci.
+
 ## Firestore dan deploy konfigurasi
 
 Collection yang digunakan ialah `cameras`, `traffic_latest`, `traffic_records`, `traffic_alerts`, dan `system_status/backend`. Timestamp penulisan menggunakan server timestamp. Query mempunyai had dan sejarah disusun terbaru dahulu.
