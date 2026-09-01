@@ -1,4 +1,7 @@
+import Hls from "hls.js";
+
 const HLS_URL = (import.meta.env.VITE_HLS_URL || "").trim();
+window.__hlsEnabled = Boolean(HLS_URL);
 
 if (HLS_URL) {
   const image = document.getElementById("videoFeed");
@@ -7,6 +10,7 @@ if (HLS_URL) {
   const placeholder = document.getElementById("feedPlaceholder");
   const refresh = document.getElementById("refreshBtn");
   const play = document.getElementById("playBtn");
+  const resume = document.getElementById("resumeBtn");
   const video = document.createElement("video");
   let hls;
 
@@ -31,16 +35,16 @@ if (HLS_URL) {
     if (video.canPlayType("application/vnd.apple.mpegurl")) {
       video.src = HLS_URL;
       video.play().catch(() => setState("PLAY TEKANAN DIPERLUKAN"));
-    } else if (window.Hls?.isSupported()) {
-      hls = new window.Hls({ enableWorker: true, lowLatencyMode: true });
-      hls.loadSource(HLS_URL);
-      hls.attachMedia(video);
-      hls.on(window.Hls.Events.MANIFEST_PARSED, () => {
-        video.play().catch(() => setState("PLAY TEKANAN DIPERLUKAN"));
-      });
-      hls.on(window.Hls.Events.ERROR, (_, details) => {
-        if (details.fatal) setState("HLS OFFLINE");
-      });
+    } else if (Hls.isSupported()) {
+        hls = new Hls({ enableWorker: true, lowLatencyMode: true });
+        hls.loadSource(HLS_URL);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          video.play().catch(() => setState("PLAY TEKANAN DIPERLUKAN"));
+        });
+        hls.on(Hls.Events.ERROR, (_, details) => {
+          if (details.fatal) setState("HLS OFFLINE");
+        });
     } else {
       setState("HLS TIDAK DISOKONG");
     }
@@ -51,14 +55,33 @@ if (HLS_URL) {
     setState("LIVE FEED ACTIVE");
   });
   video.addEventListener("error", () => setState("HLS OFFLINE"));
-  refresh.addEventListener("click", () => {
-    if (hls) hls.stopLoad();
+
+  const restart = () => {
+    if (hls) {
+      hls.destroy();
+      hls = undefined;
+    }
+    video.removeAttribute("src");
     video.dataset.started = "false";
     start();
-  });
-  play.addEventListener("click", () => {
+  };
+
+  const togglePlayback = () => {
     if (video.paused) video.play().catch(() => {});
     else video.pause();
+  };
+
+  refresh.addEventListener("click", restart);
+  document.getElementById("settingsReconnectBtn")?.addEventListener("click", restart);
+  play.addEventListener("click", togglePlayback);
+  resume?.addEventListener("click", togglePlayback);
+  video.addEventListener("play", () => {
+    placeholder.hidden = true;
+    document.getElementById("paused").classList.remove("show");
+    document.getElementById("playBtn").textContent = "\u23f8";
+  });
+  video.addEventListener("pause", () => {
+    document.getElementById("playBtn").textContent = "\u25b6";
   });
 
   window.addEventListener("load", start, { once: true });

@@ -1,0 +1,16 @@
+logLevel: info
+logDestinations: [stdout]
+
+# TLS is terminated by Caddy. MediaMTX stays private on the Docker network.
+rtsp: false
+hls: true
+hlsAddress: :8888
+hlsEncryption: false
+hlsVariant: fmp4
+hlsAllowOrigins: ["*"]
+
+paths:
+  cctv:
+    # The actual RTSP URL is injected by docker-compose from .env.gateway.
+    source: publisher
+    rtspTransport: tcp

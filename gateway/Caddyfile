@@ -1,0 +1,21 @@
+{$HLS_DOMAIN} {
+    encode gzip
+
+    @preflight method OPTIONS
+    handle @preflight {
+        header Access-Control-Allow-Origin "{$HLS_ALLOWED_ORIGIN}"
+        header Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
+        header Access-Control-Allow-Headers "*"
+        respond 204
+    }
+
+    header {
+        Access-Control-Allow-Origin "{$HLS_ALLOWED_ORIGIN}"
+        Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
+        Access-Control-Allow-Headers "*"
+        Access-Control-Expose-Headers "*"
+        Cache-Control "no-store"
+    }
+
+    reverse_proxy mediamtx:8888
+}

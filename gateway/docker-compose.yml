@@ -1,0 +1,29 @@
+services:
+  mediamtx:
+    image: bluenviron/mediamtx:1.20.1
+    restart: unless-stopped
+    env_file:
+      - .env.gateway
+    environment:
+      MTX_PATHS_CCTV_SOURCE: ${CCTV_RTSP_URL:?CCTV_RTSP_URL is required}
+      MTX_PATHS_CCTV_RTSPTRANSPORT: tcp
+    expose:
+      - "8888"
+    volumes:
+      - ./mediamtx.yml:/mediamtx.yml:ro
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on:
+      - mediamtx
+    environment:
+      HLS_DOMAIN: ${HLS_DOMAIN:?HLS_DOMAIN is required}
+      HLS_ALLOWED_ORIGIN: ${HLS_ALLOWED_ORIGIN:-https://smart-traffic-dab1e.web.app}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy-data:/data
+      - ./caddy-config:/config

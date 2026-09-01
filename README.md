@@ -18,6 +18,7 @@ Video dan frame tidak pernah disimpan dalam Firestore. Frontend tidak mempunyai 
 
 ```text
 frontend/             Dashboard, manifest, service worker, offline page dan ikon
+gateway/              MediaMTX RTSP-to-HLS dan Caddy HTTPS gateway
 backend/              FastAPI, YOLO, video worker dan konfigurasi
 backend/repositories/ Akses Firestore yang diasingkan
 backend/services/     Worker ringkasan, heartbeat dan amaran
@@ -116,6 +117,23 @@ Model utama ialah `yolo26n.pt`; backend mencuba model nano rasmi fallback `yolo1
 Dalam VS Code, klik kanan `frontend/index.html` dan pilih **Open with Live Server**. Gunakan origin `http://127.0.0.1:5500` atau `http://localhost:5500`; jangan guna `file://` kerana service worker memerlukan HTTP/HTTPS.
 
 Dashboard menghentikan polling ketika tab tidak aktif, membatalkan request tertunggak, dan menyambung semula apabila tab aktif. Data live dibersihkan apabila API offline supaya data lama tidak kelihatan sebagai data semasa.
+
+## Gateway HTTPS/HLS untuk CCTV
+
+Browser tidak boleh memainkan RTSP secara terus. Untuk paparan production,
+jalankan gateway pada PC/Raspberry Pi yang berada dalam LAN sama dengan kamera:
+
+```text
+CCTV RTSP -> MediaMTX -> Caddy HTTPS -> PWA Firebase
+```
+
+Ikut arahan lengkap dalam [gateway/README.md](gateway/README.md). Gateway
+menghasilkan playlist `https://hostname/cctv/index.m3u8`; credential RTSP hanya
+disimpan dalam `.env.gateway` pada mesin gateway dan tidak masuk Git atau PWA.
+
+Tambah URL HLS public sebagai GitHub Actions repository secret bernama
+`CCTV_HLS_URL`. Workflow akan membina PWA dengan URL tersebut. Tanpa secret itu,
+deployment frontend dihentikan supaya PWA tidak kembali senyap kepada video demo.
 
 ## Akses Admin PWA
 

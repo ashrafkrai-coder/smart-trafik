@@ -16,6 +16,8 @@ jobs:
     permissions:
       contents: read
       id-token: write
+    outputs:
+      backend_url: ${{ steps.deploy.outputs.url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -42,15 +44,15 @@ jobs:
         with:
           service: ${{ env.SERVICE_NAME }}
           region: ${{ env.REGION }}
-          image: ${{ REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/smart-trafik/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/smart-trafik/${{ env.SERVICE_NAME }}:${{ github.sha }}
           flags: "--allow-unauthenticated --port=8080 --memory=2Gi --cpu=2 --max-instances=10 --set-env-vars=FIREBASE_PROJECT_ID=${PROJECT_ID},FIREBASE_ENABLED=true,ALLOWED_ORIGINS=https://${PROJECT_ID}.web.app"
-
-      - name: Output service URL
-        run: echo "BACKEND_URL=${{ steps.deploy.outputs.url }}" >> $GITHUB_ENV
 
   deploy-frontend:
     needs: deploy-backend
     runs-on: ubuntu-latest
+    env:
+      BACKEND_URL: ${{ needs.deploy-backend.outputs.backend_url }}
+      HLS_URL: ${{ secrets.CCTV_HLS_URL }}
     steps:
       - uses: actions/checkout@v4
 
@@ -68,8 +70,12 @@ jobs:
 
       - name: Build frontend with production API URL
         run: |
+          if [ -z "$HLS_URL" ]; then
+            echo "::error::GitHub Secret CCTV_HLS_URL belum ditetapkan."
+            exit 1
+          fi
           cd frontend
-          VITE_API_BASE_URL=${{ env.BACKEND_URL }} npm run build
+          VITE_API_BASE_URL="$BACKEND_URL" VITE_HLS_URL="$HLS_URL" npm run build
 
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
