@@ -51,4 +51,4 @@ Set-Location -LiteralPath $ProjectRoot
 & $VenvActivate
 Write-Host "Smart Trafik API: http://127.0.0.1:8000" -ForegroundColor Green
 Write-Host "Tekan Ctrl+C untuk berhenti."
-uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
+uvicorn backend.main:app --host 127.0.0.1 --port 8000
