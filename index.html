@@ -48,7 +48,8 @@
   <!-- Navigasi bawah -->
   <nav class="bottom-nav"><button class="nav-btn touch active"><i>⌂</i>Utama</button><button class="nav-btn touch"><i>▣</i>Kamera</button><button class="nav-btn touch"><i>⌖</i>Peta</button><button class="nav-btn touch"><i>⚙</i>Tetapan</button></nav></main>
   <script>
-    window.location.href = "http://localhost:5500" + location.search;
+    // Root entry opens the built live PWA instead of the legacy demo screen.
+    window.location.replace("./frontend-dist/" + location.search);
   </script>
 </body>
 </html>
