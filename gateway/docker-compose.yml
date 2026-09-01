@@ -2,8 +2,6 @@ services:
   mediamtx:
     image: bluenviron/mediamtx:1.20.1
     restart: unless-stopped
-    env_file:
-      - .env.gateway
     environment:
       MTX_PATHS_CCTV_SOURCE: ${CCTV_RTSP_URL:?CCTV_RTSP_URL is required}
       MTX_PATHS_CCTV_RTSPTRANSPORT: tcp
