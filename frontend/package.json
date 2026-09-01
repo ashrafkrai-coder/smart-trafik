@@ -10,5 +10,8 @@
     "build": "vite build",
     "dev": "vite",
     "deploy": "npm run build && firebase deploy --only hosting"
+  },
+  "dependencies": {
+    "hls.js": "^1.7.1"
   }
 }

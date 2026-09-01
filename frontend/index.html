@@ -32,7 +32,7 @@
 <article class="settings-card"><h3>Confidence minimum YOLO</h3><p>Nilai lebih tinggi mengurangkan pengesanan lemah. Perubahan digunakan pada frame seterusnya dan kembali kepada konfigurasi asal apabila backend dimulakan semula.</p><label class="field-label" for="confidenceRange">Confidence minimum</label><div class="range-row"><input id="confidenceRange" class="range-input" type="range" min="5" max="95" step="1" value="35"><output id="confidenceSettingValue" class="range-value">35%</output></div><button id="saveConfidenceBtn" class="settings-action touch">Simpan confidence</button></article>
 <article class="settings-card"><h3>Kawalan siaran</h3><p>Gunakan sambung semula apabila MJPEG terhenti selepas sumber video ditukar.</p><button id="settingsReconnectBtn" class="settings-action secondary touch">Sambung semula siaran</button><p id="settingsMessage" class="settings-message" role="status"></p></article></section></div>
 <nav class="bottom-nav" aria-label="Navigasi utama"><button class="nav-btn touch active" data-view="home"><i>âŒ‚</i>Utama</button><button class="nav-btn touch" data-view="cameras"><i>â–£</i>Kamera</button><button class="nav-btn touch" data-view="map"><i>âŒ–</i>Peta</button><button class="nav-btn touch" data-view="settings"><i>âš™</i>Tetapan</button></nav></main>
-<script type="module">
+<script defer src="https://cdn.jsdelivr.net/npm/hls.js@1"></script><script type="module">
 // Sambungan tempatan dan polling terkawal.
 // Local development uses Vite's same-origin proxy; production can override this.
 const API_BASE_URL=import.meta.env.VITE_API_BASE_URL || "",POLL_INTERVAL_MS=2000,REQUEST_TIMEOUT_MS=5000;
@@ -83,5 +83,5 @@ const repairTextNode=node=>{if(node.parentElement?.closest("script,style"))retur
 </script><script>
 const liveFeed=document.getElementById("videoFeed");
 if(liveFeed&&!liveFeed.src)liveFeed.src="/video-feed";
-</script></body></html>
+</script><script type="module" src="./hls-bootstrap.js"></script></body></html>
 
