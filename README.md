@@ -1,5 +1,7 @@
 # Smart Trafik
 
+Sumber video yang disokong: fail MP4/AVI/MOV/MKV, kamera USB, dan CCTV RTSP/HTTP.
+
 Smart Trafik ialah dashboard PWA vanilla JavaScript dengan backend FastAPI. OpenCV membaca MP4, Ultralytics YOLO mengesan kereta, motosikal, bas dan lori, dan keadaan live disimpan dalam memori. Ringkasan berkala sahaja dihantar ke Cloud Firestore.
 
 ```text
@@ -78,6 +80,16 @@ videos/trafik.mp4
 ```
 
 MP4 diulang apabila tamat. Ia tidak dimuat naik ke Firestore atau Git. Sumber RTSP yang mengandungi username/kata laluan mesti berada dalam environment backend sahaja.
+
+Untuk Hikvision, aktifkan kamera dahulu menggunakan SADP dan gunakan main stream berikut. Simpan credentials berasingan supaya URL tidak memaparkan rahsia:
+
+```text
+VIDEO_SOURCE=rtsp://192.168.1.64:554/Streaming/Channels/101
+CCTV_USERNAME=admin
+CCTV_PASSWORD=kata-laluan-kamera
+```
+
+Gunakan `VIDEO_SOURCE=0` untuk kamera USB pertama. RTSP dibuka melalui FFmpeg/OpenCV dan disambungkan semula secara automatik apabila frame terputus.
 
 ## 5. Jalankan backend
 

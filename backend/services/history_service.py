@@ -145,6 +145,6 @@ def seed_cameras_if_empty() -> None:
         camera_repository.upsert_camera({
             "camera_id": camera["camera_id"], "name": camera["camera_name"], "location": camera["location"],
             "source_type": "video" if is_primary else "demo",
-            "source_name": config.resolve_video_source().name if is_primary else "",
+            "source_name": config.video_source_label() if is_primary else "",
             "is_active": True,
         })

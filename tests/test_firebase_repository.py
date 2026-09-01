@@ -21,9 +21,12 @@ def test_firebase_initialization_succeeds_with_mock_credentials(monkeypatch: pyt
     fake_admin.get_app = MagicMock(side_effect=ValueError("belum initialize"))  # type: ignore[attr-defined]
     fake_admin.initialize_app = MagicMock(return_value="app")  # type: ignore[attr-defined]
     fake_firestore = types.SimpleNamespace(client=MagicMock(return_value=client))
+    fake_credentials = types.SimpleNamespace(Certificate=MagicMock())
     fake_admin.firestore = fake_firestore  # type: ignore[attr-defined]
+    fake_admin.credentials = fake_credentials  # type: ignore[attr-defined]
     monkeypatch.setitem(sys.modules, "firebase_admin", fake_admin)
     monkeypatch.setitem(sys.modules, "firebase_admin.firestore", fake_firestore)
+    monkeypatch.setitem(sys.modules, "firebase_admin.credentials", fake_credentials)
     monkeypatch.setattr(config, "FIREBASE_ENABLED", True)
     firebase_client.reset_for_tests()
 

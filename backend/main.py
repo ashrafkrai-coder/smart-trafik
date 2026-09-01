@@ -218,7 +218,7 @@ def update_camera(camera_id: str, request: CameraUpdateRequest, _: None = Depend
             camera_repository.upsert_camera({
                 "camera_id": normalized_id, "name": request.camera_name, "location": request.location,
                 "source_type": "video" if normalized_id == config.CAMERA_ID else updated["mode"],
-                "source_name": video_processor.source_path.name if video_processor.source_path and normalized_id == config.CAMERA_ID else "",
+                "source_name": video_processor.source_label if normalized_id == config.CAMERA_ID else "",
                 "is_active": True,
             })
         except Exception as exc:
@@ -250,7 +250,7 @@ def resolve_traffic_alert(alert_id: str, _: None = Depends(_require_admin)) -> d
 @app.get("/api/settings")
 def get_settings(_: None = Depends(_require_admin)) -> dict[str, Any]:
     return {
-        "source": video_processor.source_path.name if video_processor.source_path else "",
+        "source": video_processor.source_label,
         "confidence_threshold": config.CONFIDENCE_THRESHOLD,
         "image_size": config.IMAGE_SIZE,
         "processing_fps": config.PROCESSING_FPS,

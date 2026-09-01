@@ -42,7 +42,7 @@ class VideoProcessor:
         self._source_changed = threading.Event()
         self._thread: threading.Thread | None = None
         self._capture: cv2.VideoCapture | None = None
-        self._source_path = config.resolve_video_source()
+        self._source = config.resolve_video_source()
         self._counts_window: deque[int] = deque(maxlen=config.TRAFFIC_SMOOTH_FRAMES)
         self._latest_jpeg: bytes | None = None
         self._snapshot: dict[str, Any] | None = None
@@ -50,9 +50,14 @@ class VideoProcessor:
         self._video_available = False
 
     @property
-    def source_path(self) -> Path:
+    def source_path(self) -> Path | None:
         with self._lock:
-            return self._source_path
+            return self._source if isinstance(self._source, Path) else None
+
+    @property
+    def source_label(self) -> str:
+        with self._lock:
+            return config.video_source_label(self._source)
 
     @property
     def video_available(self) -> bool:
@@ -80,7 +85,7 @@ class VideoProcessor:
 
     def set_source(self, source_path: Path) -> None:
         with self._lock:
-            self._source_path = source_path
+            self._source = source_path
             self._snapshot = None
             self._latest_jpeg = None
             self._counts_window.clear()
@@ -119,16 +124,17 @@ class VideoProcessor:
                 self._stop_event.wait(config.RECONNECT_DELAY_SECONDS)
                 continue
 
-            source = self.source_path
-            if source is None or not source.is_file():
-                self._set_offline("Video source not configured or file not found.")
+            with self._lock:
+                source = self._source
+            if source is None or (isinstance(source, Path) and not source.is_file()):
+                self._set_offline("Sumber video belum dikonfigurasi atau tidak dijumpai.")
                 self._stop_event.wait(config.RECONNECT_DELAY_SECONDS)
                 continue
 
-            capture = cv2.VideoCapture(str(source))
+            capture = self._open_capture(source)
             self._capture = capture
             if not capture.isOpened():
-                self._set_offline(f"Video tidak dapat dibuka: {source.name}")
+                self._set_offline(f"Video tidak dapat dibuka: {config.video_source_label(source)}")
                 self._release_capture()
                 self._wait_for_retry()
                 continue
@@ -137,7 +143,7 @@ class VideoProcessor:
                 self._video_available = True
                 self._error = None
             source_fps = capture.get(cv2.CAP_PROP_FPS)
-            is_local_video = source.suffix.lower() in config.ALLOWED_VIDEO_EXTENSIONS
+            is_local_video = isinstance(source, Path) and source.suffix.lower() in config.ALLOWED_VIDEO_EXTENSIONS
             failures = 0
             while not self._stop_event.is_set() and not self._source_changed.is_set():
                 started_at = time.monotonic()
@@ -145,7 +151,7 @@ class VideoProcessor:
                 if not ok:
                     failures += 1
                     # Fail MP4 diulang untuk demo. Sumber lain disambung semula selepas beberapa kegagalan.
-                    if source.suffix.lower() in config.ALLOWED_VIDEO_EXTENSIONS:
+                    if is_local_video:
                         capture.set(cv2.CAP_PROP_POS_FRAMES, 0)
                         ok, frame = capture.read()
                     if not ok:
@@ -215,6 +221,15 @@ class VideoProcessor:
             self._error = message
             self._snapshot = None
             self._latest_jpeg = None
+
+    @staticmethod
+    def _open_capture(source: Path | str | int) -> cv2.VideoCapture:
+        if isinstance(source, int):
+            return cv2.VideoCapture(source, cv2.CAP_DSHOW)
+        if isinstance(source, Path):
+            return cv2.VideoCapture(str(source))
+        # CAP_FFMPEG memberi RTSP over TCP yang lebih stabil untuk CCTV berwayar.
+        return cv2.VideoCapture(source, cv2.CAP_FFMPEG)
 
     @staticmethod
     def _resize_frame(frame: Any) -> Any:
