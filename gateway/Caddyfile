@@ -17,5 +17,8 @@
         Cache-Control "no-store"
     }
 
-    reverse_proxy mediamtx:8888
+    reverse_proxy mediamtx:8888 {
+        header_down -Access-Control-Allow-Origin
+        header_down Access-Control-Allow-Origin "{$HLS_ALLOWED_ORIGIN}"
+    }
 }

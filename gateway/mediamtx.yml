@@ -7,7 +7,6 @@ hls: true
 hlsAddress: :8888
 hlsEncryption: false
 hlsVariant: fmp4
-hlsAllowOrigins: ["*"]
 
 paths:
   cctv:
