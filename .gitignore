@@ -23,6 +23,7 @@ gateway/caddy-config/
 gateway/certs/
 gateway/runtime/
 frontend/.env.local
+frontend/node_modules/
 frontend/node_modules/hls.js/
 frontend/node_modules/.vite/deps/hls__js.js*
 frontend/node_modules/.vite/deps_temp_*/

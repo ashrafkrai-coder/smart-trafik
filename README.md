@@ -4,6 +4,24 @@ Sumber video yang disokong: fail MP4/AVI/MOV/MKV, kamera USB, dan CCTV RTSP/HTTP
 
 Smart Trafik ialah dashboard PWA vanilla JavaScript dengan backend FastAPI. OpenCV membaca MP4, Ultralytics YOLO mengesan kereta, motosikal, bas dan lori, dan keadaan live disimpan dalam memori. Ringkasan berkala sahaja dihantar ke Cloud Firestore.
 
+## Cara disyorkan: laptop sebagai server
+
+Firebase hanya mengehoskan PWA. Laptop membaca RTSP, menjalankan YOLO dan menghantar video MJPEG beranotasi serta data analisis melalui Cloudflare Quick Tunnel (HTTPS). Port router tidak perlu dibuka.
+
+Pada Windows PowerShell di root projek:
+
+```powershell
+.\setup-laptop.ps1
+```
+
+Edit fail `.env` yang dicipta dan isi `VIDEO_SOURCE`, `CCTV_USERNAME` serta `CCTV_PASSWORD`. Pastikan laptop dan CCTV berada pada rangkaian yang sama. Kemudian jalankan:
+
+```powershell
+.\start-laptop-server.ps1
+```
+
+Skrip akan membuka PWA dengan alamat server sementara secara automatik. Biarkan tetingkap PowerShell terbuka. Alamat `trycloudflare.com` berubah apabila tunnel dimulakan semula; skrip akan menyimpan alamat baharu ke PWA melalui parameter `?server=`.
+
 ```text
 Video MP4 / CCTV
        ↓
@@ -118,9 +136,9 @@ Dalam VS Code, klik kanan `frontend/index.html` dan pilih **Open with Live Serve
 
 Dashboard menghentikan polling ketika tab tidak aktif, membatalkan request tertunggak, dan menyambung semula apabila tab aktif. Data live dibersihkan apabila API offline supaya data lama tidak kelihatan sebagai data semasa.
 
-## Gateway HTTPS/HLS untuk CCTV
+## Gateway HTTPS/HLS alternatif
 
-Browser tidak boleh memainkan RTSP secara terus. Untuk paparan production,
+Kaedah laptop di atas menggunakan FastAPI MJPEG melalui Quick Tunnel dan memaparkan kotak pengesanan YOLO. HLS di bawah ialah pilihan alternatif untuk paparan RTSP mentah tanpa anotasi YOLO dalam video. Browser tidak boleh memainkan RTSP secara terus. Untuk paparan production,
 jalankan gateway pada PC/Raspberry Pi yang berada dalam LAN sama dengan kamera:
 
 ```text
@@ -131,9 +149,7 @@ Ikut arahan lengkap dalam [gateway/README.md](gateway/README.md). Gateway
 menghasilkan playlist `https://hostname/cctv/index.m3u8`; credential RTSP hanya
 disimpan dalam `.env.gateway` pada mesin gateway dan tidak masuk Git atau PWA.
 
-Tambah URL HLS public sebagai GitHub Actions repository secret bernama
-`CCTV_HLS_URL`. Workflow akan membina PWA dengan URL tersebut. Tanpa secret itu,
-deployment frontend dihentikan supaya PWA tidak kembali senyap kepada video demo.
+Untuk binaan HLS tersuai, tetapkan `VITE_HLS_URL` semasa membina frontend. Workflow lalai tidak memerlukan HLS kerana ia menggunakan alamat laptop yang disimpan oleh PWA.
 
 ## Akses Admin PWA
 
