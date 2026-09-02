@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Live Stream — go2rtc WebRTC</title>
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      background: #000;
+      color: #93a4c0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+    }
+    video {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      object-fit: contain;
+    }
+    #status {
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(7, 11, 20, 0.75);
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div id="status">Menyambung WebRTC…</div>
+  <video id="player" autoplay playsinline muted controls></video>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const src = params.get("src") || "pintu_depan";
+    const mode = (params.get("mode") || "webrtc").toLowerCase();
+    const statusEl = document.getElementById("status");
+    const video = document.getElementById("player");
+
+    function setStatus(text) {
+      statusEl.textContent = text;
+      document.title = src + " — " + text;
+    }
+
+    async function startWebRTC() {
+      const pc = new RTCPeerConnection({
+        bundlePolicy: "max-bundle",
+        iceServers: [
+          { urls: ["stun:stun.cloudflare.com:3478", "stun:stun.l.google.com:19302"] },
+        ],
+      });
+
+      pc.addTransceiver("video", { direction: "recvonly" });
+      pc.addTransceiver("audio", { direction: "recvonly" });
+
+      pc.addEventListener("track", (event) => {
+        if (event.streams && event.streams[0]) {
+          video.srcObject = event.streams[0];
+        } else {
+          const stream = video.srcObject instanceof MediaStream
+            ? video.srcObject
+            : new MediaStream();
+          stream.addTrack(event.track);
+          video.srcObject = stream;
+        }
+        video.play().catch(() => {
+          video.muted = true;
+          video.play().catch(() => {});
+        });
+        setStatus("LIVE · WebRTC · " + src);
+      });
+
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+
+      const response = await fetch("/api/webrtc?src=" + encodeURIComponent(src), {
+        method: "POST",
+        headers: { "Content-Type": "application/sdp" },
+        body: offer.sdp,
+      });
+
+      if (!response.ok) {
+        throw new Error("go2rtc WebRTC HTTP " + response.status);
+      }
+
+      const answer = await response.text();
+      await pc.setRemoteDescription({ type: "answer", sdp: answer });
+    }
+
+    function startMseFallback() {
+      setStatus("Fallback MSE · " + src);
+      video.srcObject = null;
+      video.src = "/api/stream.mp4?src=" + encodeURIComponent(src);
+      video.play().catch(() => {});
+    }
+
+    (async () => {
+      try {
+        if (mode === "mse" || mode === "mp4") {
+          startMseFallback();
+          return;
+        }
+        await startWebRTC();
+      } catch (err) {
+        console.warn(err);
+        setStatus("WebRTC gagal, cubaan MSE…");
+        startMseFallback();
+      }
+    })();
+  </script>
+</body>
+</html>

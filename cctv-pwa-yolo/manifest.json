@@ -1,0 +1,22 @@
+{
+  "name": "Smart CCTV — Pemantauan Trafik YOLOv8",
+  "short_name": "Smart CCTV",
+  "description": "Dashboard PWA pemantauan CCTV jimat data dengan analisis kepadatan trafik YOLOv8.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0b1220",
+  "theme_color": "#0b1220",
+  "lang": "ms",
+  "dir": "ltr",
+  "categories": ["utilities", "productivity"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

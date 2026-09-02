@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="description" content="Dashboard PWA pemantauan CCTV jimat data dengan analisis trafik YOLOv8.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Smart CCTV">
+  <title>Smart CCTV — Pemantauan Trafik YOLOv8</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <div>
+          <h1>Smart CCTV</h1>
+          <p class="subtitle">Pemantauan jimat data · YOLOv8 Traffic AI</p>
+        </div>
+      </div>
+      <div class="topbar-meta">
+        <div class="pill" id="backend-pill" title="Status go2rtc / snapshot">
+          <span class="dot"></span>
+          <span id="backend-label">Menyambung…</span>
+        </div>
+        <div class="clock" id="clock">--:--:--</div>
+      </div>
+    </header>
+
+    <section class="hero-stats" aria-label="Ringkasan trafik">
+      <article class="stat-card" id="traffic-hero">
+        <p class="stat-kicker">Analisis Pintu Depan</p>
+        <p class="stat-badge" id="traffic-badge">🚗 0 Kenderaan | Kepadatan: Rendah</p>
+        <div class="stat-grid">
+          <div><span>Kereta</span><strong id="count-car">0</strong></div>
+          <div><span>Motosikal</span><strong id="count-motorcycle">0</strong></div>
+          <div><span>Bas</span><strong id="count-bus">0</strong></div>
+          <div><span>Lori</span><strong id="count-truck">0</strong></div>
+        </div>
+        <p class="stat-updated" id="traffic-updated">Dikemas kini pada: --:--:--</p>
+      </article>
+    </section>
+
+    <main class="camera-grid" id="camera-grid"></main>
+  </div>
+
+  <div class="modal" id="live-modal" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-head">
+        <h2 id="modal-title">Live Stream</h2>
+        <button type="button" class="icon-btn" id="modal-close" aria-label="Tutup">✕</button>
+      </div>
+      <p class="modal-hint">WebRTC melalui go2rtc · penggunaan data lebih tinggi daripada snapshot</p>
+      <iframe id="live-frame" title="Live CCTV WebRTC" allow="autoplay; fullscreen"></iframe>
+    </div>
+  </div>
+
+  <noscript>
+    <p class="noscript">JavaScript diperlukan untuk dashboard CCTV ini.</p>
+  </noscript>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

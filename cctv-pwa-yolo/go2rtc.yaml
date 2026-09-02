@@ -1,0 +1,32 @@
+# go2rtc — media server untuk stream RTSP CCTV
+# Dokumentasi: https://github.com/AlexxIT/go2rtc
+
+api:
+  listen: ":1984"
+  # CORS: benarkan PWA/browser memanggil API merentas origin
+  origin: "*"
+  # Hidangkan dashboard PWA + traffic_data.json terus dari folder projek
+  static_dir: "."
+
+rtsp:
+  listen: ":8554"
+  transport: tcp
+
+webrtc:
+  listen: ":8555"
+
+log:
+  level: debug
+  api: debug
+  rtsp: debug
+  streams: debug
+  webrtc: debug
+
+streams:
+  # Kamera 1: Hikvision Pintu Depan (Utama)
+  pintu_depan:
+    - rtsp://admin:Sayang999@192.168.1.64:554/Streaming/Channels/101?tcp
+
+  # Kamera 2: Halaman (Menggunakan test.mp4 sebagai ujian / dummy loop)
+  halaman:
+    - exec:ffmpeg -re -stream_loop -1 -i test.mp4 -c copy -rtsp_transport tcp -f rtsp rtsp://localhost:8554/halaman

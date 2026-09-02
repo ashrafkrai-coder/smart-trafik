@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-09-03T07:12:24",
+  "updated_at": "07:12:24",
+  "camera": "pintu_depan",
+  "status": "ok",
+  "message": "",
+  "counts": {
+    "car": 0,
+    "motorcycle": 0,
+    "bus": 0,
+    "truck": 0,
+    "total": 0
+  },
+  "labels": {
+    "car": "Kereta",
+    "motorcycle": "Motosikal",
+    "bus": "Bas",
+    "truck": "Lori"
+  },
+  "density": "Rendah",
+  "density_level": "low",
+  "badge": "🚗 0 Kenderaan | Kepadatan: Rendah"
+}
