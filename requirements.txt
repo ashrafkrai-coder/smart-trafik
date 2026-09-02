@@ -1,8 +1,8 @@
 fastapi
 uvicorn[standard]
---extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.2.2+cpu
-torchvision==0.17.2+cpu
+# Install PyTorch CUDA build on this laptop so Ultralytics can use the GPU.
+# Example for CUDA 12.4 on Windows:
+#   pip install --index-url https://download.pytorch.org/whl/cu124 torch torchvision
 ultralytics
 opencv-python
 numpy

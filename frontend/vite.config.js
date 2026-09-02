@@ -4,6 +4,7 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const frontendRoot = dirname(fileURLToPath(import.meta.url))
+const backendUrl = process.env.SMART_TRAFIK_BACKEND_URL || 'http://127.0.0.1:8000'
 
 function copyPwaFiles() {
   return {
@@ -33,8 +34,8 @@ export default defineConfig({
   server: {
     port: 5500,
     proxy: {
-      '/api': 'http://127.0.0.1:8000',
-      '/video-feed': 'http://127.0.0.1:8000'
+      '/api': backendUrl,
+      '/video-feed': backendUrl
     }
   }
 })

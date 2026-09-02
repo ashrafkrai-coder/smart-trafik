@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from pathlib import Path
 from typing import Any
 
@@ -28,6 +29,7 @@ class VehicleDetector:
         self.model: Any | None = None
         self.model_name: str | None = None
         self.load_error: str | None = None
+        self.device = self._select_device()
 
     @property
     def loaded(self) -> bool:
@@ -50,6 +52,8 @@ class VehicleDetector:
             model_reference = str(local_model) if local_model.exists() else model_name
             try:
                 self.model = YOLO(model_reference)
+                if self.device != "cpu":
+                    self.model.to(self.device)
                 self.model_name = model_name
                 self.load_error = None
                 LOGGER.info("Model YOLO dimuatkan: %s", model_name)
@@ -71,6 +75,7 @@ class VehicleDetector:
             classes=list(COCO_VEHICLE_CLASSES),
             conf=config.CONFIDENCE_THRESHOLD,
             imgsz=config.IMAGE_SIZE,
+            device=self.device,
             verbose=False,
         )
         detections: list[dict[str, Any]] = []
@@ -110,6 +115,19 @@ class VehicleDetector:
                 cv2.LINE_AA,
             )
         return detections, annotated_frame
+
+    @staticmethod
+    def _select_device() -> str:
+        """Gunakan CUDA jika PyTorch bertemu GPU, jika tidak kembali ke CPU."""
+        try:
+            import torch
+        except Exception:
+            return "cpu"
+
+        requested = os.getenv("TORCH_DEVICE", "auto").strip().lower()
+        if requested and requested != "auto":
+            return requested
+        return "cuda:0" if torch.cuda.is_available() else "cpu"
 
 
 def draw_summary(frame: np.ndarray, vehicle_count: int, traffic_status: str) -> np.ndarray:
