@@ -28,16 +28,15 @@ self.addEventListener("fetch", (event) => {
   if (request.method !== "GET") return;
 
   const url = new URL(request.url);
-  const isLiveMedia =
-    url.pathname.includes("/api/frame.jpeg") ||
-    url.pathname.includes("/api/stream") ||
-    url.pathname.includes("/stream.html") ||
-    url.pathname.endsWith("/traffic_data.json");
+  const isApiOrLive =
+    url.pathname.startsWith("/api/") ||
+    url.pathname === "/traffic_data.json" ||
+    url.pathname === "/stream.html";
 
-  if (isLiveMedia) {
+  if (isApiOrLive) {
     event.respondWith(
       fetch(request, { cache: "no-store" }).catch(() =>
-        new Response("", { status: 504, statusText: "Snapshot tidak tersedia luar talian" })
+        new Response("", { status: 504, statusText: "Tidak tersedia luar talian" })
       )
     );
     return;

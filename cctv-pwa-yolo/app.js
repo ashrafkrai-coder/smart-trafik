@@ -7,6 +7,9 @@ const CAMERAS = [
 const SNAPSHOT_INTERVAL_MS = 3000;
 const TRAFFIC_INTERVAL_MS = 3000;
 
+const BACKEND_URL_KEY = "cctv_backend_url";
+const DEFAULT_BACKEND = "";
+
 const cameraGrid = document.getElementById("camera-grid");
 const backendPill = document.getElementById("backend-pill");
 const backendLabel = document.getElementById("backend-label");
@@ -21,6 +24,24 @@ const modalClose = document.getElementById("modal-close");
 
 const cameraState = new Map();
 
+function getBackendUrl() {
+  return localStorage.getItem(BACKEND_URL_KEY) || DEFAULT_BACKEND;
+}
+
+function setBackendUrl(url) {
+  const trimmed = url.trim();
+  if (trimmed) {
+    localStorage.setItem(BACKEND_URL_KEY, trimmed);
+  } else {
+    localStorage.removeItem(BACKEND_URL_KEY);
+  }
+}
+
+function buildUrl(path) {
+  const base = getBackendUrl();
+  return base ? `${base.replace(/\/$/, "")}${path}` : path;
+}
+
 function formatTime(date = new Date()) {
   return date.toLocaleTimeString("ms-MY", {
     hour12: false,
@@ -31,11 +52,15 @@ function formatTime(date = new Date()) {
 }
 
 function snapshotUrl(cameraId) {
-  return `/api/frame.jpeg?src=${encodeURIComponent(cameraId)}&t=${Date.now()}`;
+  return `${buildUrl("/api/frame.jpeg")}?src=${encodeURIComponent(cameraId)}&t=${Date.now()}`;
 }
 
 function webrtcUrl(cameraId) {
-  return `/stream.html?src=${encodeURIComponent(cameraId)}&mode=webrtc`;
+  return `${buildUrl("/stream.html")}?src=${encodeURIComponent(cameraId)}&mode=webrtc`;
+}
+
+function apiUrl(path) {
+  return `${buildUrl(path)}?t=${Date.now()}`;
 }
 
 function setBackendStatus(online) {
@@ -84,14 +109,12 @@ async function refreshSnapshot(cameraId) {
   if (!state) return;
 
   try {
-    // Check stream status via go2rtc API
-    const response = await fetch(`/api/streams`, { cache: "no-store" });
+    const response = await fetch(apiUrl("/api/streams"), { cache: "no-store" });
     const data = await response.json();
     const stream = data[cameraId];
     const hasProducer = stream?.producers?.some(p => p.url) ?? false;
 
     if (hasProducer) {
-      // Use WebRTC/MSE stream in iframe
       state.iframe.src = webrtcUrl(cameraId);
       state.iframe.style.display = "block";
       state.online = true;
@@ -137,7 +160,7 @@ function applyTraffic(data) {
 
 async function refreshTraffic() {
   try {
-    const response = await fetch(`/traffic_data.json?t=${Date.now()}`, { cache: "no-store" });
+    const response = await fetch(apiUrl("/traffic_data.json"), { cache: "no-store" });
     if (!response.ok) throw new Error("traffic_data.json tidak tersedia");
     const data = await response.json();
     applyTraffic(data);
@@ -164,6 +187,30 @@ function tickClock() {
   clockEl.textContent = formatTime();
 }
 
+function renderBackendInput() {
+  const pill = document.getElementById("backend-pill");
+  if (!pill) return;
+  const current = getBackendUrl();
+  pill.innerHTML = `
+    <input type="url" id="backend-url-input" placeholder="https://xxx.trycloudflare.com" value="${current}" style="width:280px;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg-elev);color:var(--text);font-size:0.8rem;" title="URL Cloudflare Tunnel (HTTPS)">
+    <button type="button" id="backend-url-save" class="btn" style="padding:6px 10px;font-size:0.75rem;">Simpan</button>
+    <span class="dot"></span>
+    <span id="backend-label">Menyambung…</span>
+  `;
+  const input = document.getElementById("backend-url-input");
+  const saveBtn = document.getElementById("backend-url-save");
+  saveBtn.addEventListener("click", () => {
+    setBackendUrl(input.value);
+    location.reload();
+  });
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      setBackendUrl(input.value);
+      location.reload();
+    }
+  });
+}
+
 function registerServiceWorker() {
   if (!("serviceWorker" in navigator)) return;
   window.addEventListener("load", () => {
@@ -174,6 +221,7 @@ function registerServiceWorker() {
 }
 
 function init() {
+  renderBackendInput();
   renderCameras();
   tickClock();
   setInterval(tickClock, 1000);
