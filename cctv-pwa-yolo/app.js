@@ -8,7 +8,7 @@ const SNAPSHOT_INTERVAL_MS = 3000;
 const TRAFFIC_INTERVAL_MS = 3000;
 
 const BACKEND_URL_KEY = "cctv_backend_url";
-const DEFAULT_BACKEND = "";
+const DEFAULT_BACKEND_URL = "https://cctv.domainanda.com";
 
 const cameraGrid = document.getElementById("camera-grid");
 const backendPill = document.getElementById("backend-pill");
@@ -25,7 +25,7 @@ const modalClose = document.getElementById("modal-close");
 const cameraState = new Map();
 
 function getBackendUrl() {
-  return localStorage.getItem(BACKEND_URL_KEY) || DEFAULT_BACKEND;
+  return localStorage.getItem(BACKEND_URL_KEY) || DEFAULT_BACKEND_URL;
 }
 
 function setBackendUrl(url) {

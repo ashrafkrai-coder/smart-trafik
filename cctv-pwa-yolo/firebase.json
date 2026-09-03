@@ -3,19 +3,14 @@
     "public": ".",
     "ignore": [
       "firebase.json",
-      ".firebaserc",
       "**/.*",
       "**/node_modules/**",
       "*.exe",
-      "*.pt",
-      "*.mp4",
-      "*.yaml",
+      "go2rtc.yaml",
       "*.py",
-      "*.bat",
-      "requirements.txt",
-      "README.md",
-      "traffic_data.json",
-      "go2rtc.yaml"
+      "*.mp4",
+      "*.pt",
+      "*.bat"
     ],
     "headers": [
       {
@@ -23,20 +18,11 @@
         "headers": [
           {
             "key": "Cache-Control",
-            "value": "no-cache, no-store, must-revalidate"
+            "value": "max-age=0, no-cache, no-store, must-revalidate"
           },
           {
             "key": "Service-Worker-Allowed",
             "value": "/"
-          }
-        ]
-      },
-      {
-        "source": "manifest.json",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-cache"
           }
         ]
       }
